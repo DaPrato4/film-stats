@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState, useEffect, ReactNode } from "react";
 
-const API_KEY = "3d3c3edb6980b5a1e057bb8788b5f5f5"; 
+const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 
 const api = axios.create({
