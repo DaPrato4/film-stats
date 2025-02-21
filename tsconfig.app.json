@@ -7,6 +7,14 @@
     "module": "ESNext",
     "skipLibCheck": true,
 
+    // ui.shadcn.com
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
+
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
