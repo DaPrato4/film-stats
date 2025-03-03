@@ -350,6 +350,8 @@ interface Movie {
 function App() {
 
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [years, setYears] = useState<Number[]>([]);
+
     
       useEffect(() => {
         const getMovies = async () => {
@@ -421,10 +423,36 @@ function App() {
         <span className="flex justify-between space-x-4">
           <div id="Selezione-Anno" className="w-1/3">
             <label htmlFor="year" className="text-black">Seleziona Anno:</label>
-            <form className="flex flex-row space-y-4 text-black">
+            <form 
+              className="flex flex-row space-y-4 text-black"
+              onSubmit={(e) => {
+              e.preventDefault();
+              const yearInput = (e.target as HTMLFormElement).year as HTMLInputElement;
+              const year = parseInt(yearInput.value);
+              console.log(year);
+              (!years.includes(year) && (year/1000)<10)? setYears([...years, year]): alert('Anno già presente');
+              }}
+            >
               <input type="number" id="year" name="year" className="border rounded px-2 py-1" placeholder="Inserisci anno" />
               <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 cursor-pointer">Invia</button>
             </form>
+            <div className="flex flex-col">
+              {years.map((year) => (
+              <div key={year.toString()} className="flex items-center text-black">
+                <span>{year.toString()}</span>
+                <button 
+                className="ml-2 text-red-500"
+                onClick={() => {
+                  setYears(years.filter(y => y !== year));
+                  console.log(years);
+                }}
+                >
+                x
+                </button>
+              </div>
+              ))}
+            </div>
+           
 
           </div>
           <div id="Film-Per-Anno" className="w-1/3 h-[500px] bg-amber-400">
