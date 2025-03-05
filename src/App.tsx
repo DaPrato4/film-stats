@@ -128,37 +128,12 @@ const BASE_URL = "https://api.themoviedb.org/3";
 //   }
 // ]
 
-const tempChartDate = [
+let datiGrafico2:DataG2[] = [
 
   {
     "id": "Media Voto",
     "color": "hsl(27, 70%, 50%)",
-    "data": [
-      {
-        "x": 2023,
-        "y": 8
-      },
-      {
-        "x": 2024,
-        "y": 7
-      },
-      {
-        "x": 2025,
-        "y": 5
-      },
-      {
-        "x": 2026,
-        "y": 6
-      },
-      {
-        "x": 2027,
-        "y": 3
-      },
-      {
-        "x": 2028,
-        "y": 7
-      }
-    ]
+    "data": []
   }
 ]
 
@@ -180,6 +155,12 @@ const fetchFromApi = async (url: string) => {
   }
 };
 
+interface DataG2 {
+  id: string;
+  color: string;
+  data: object[];
+}
+
 interface Movie {
   original_language: string;
   vote_average: ReactNode;
@@ -200,7 +181,50 @@ function App() {
     };
     getMovies();
   }, []);
-  console.log(movies[0]);
+  // console.log(movies[0]);
+
+  // costruzione dati per grafico
+  let objarray: any[] = [];
+  useEffect(() => {
+  movies.forEach((movie) => {
+    let obj: { y: number, v:number }={
+      y:0,
+      v:0
+    };
+    if (movie.release_date) {
+      obj.y = parseInt(movie.release_date.toString().slice(0, 4));
+    }
+    if(movie.vote_average){
+      obj.v = parseFloat(movie.vote_average.toString());
+    }
+    objarray.push(obj);
+  })
+  let arrData:number[]=[];
+  let arrNum:number[]=[];
+  console.log("objarray",objarray);
+  objarray.forEach((obj) => {
+    console.log("obj",obj.v);
+    (arrData[obj.y])? arrData[obj.y]+=obj.v : arrData[obj.y]=obj.v;
+    (arrNum[obj.y])? arrNum[obj.y]++ : arrNum[obj.y]=1;
+  })
+  // console.log("Provaaaaa")
+  // console.log(arrData);
+  let data1:{x:number,y:number}={x:0,y:0};
+  console.log("arrData",arrData);
+  for (let i = 1900; i < arrData.length; i++) {
+    data1 = {x:0,y:0}
+    if(arrData[i]>0){
+      data1 = {
+        x: i,
+        y: arrData[i]/arrNum[i]
+      }    
+      datiGrafico2[0].data.push(data1);
+
+    }
+  }
+  console.log(datiGrafico2);
+  },[movies]);
+
 
   return (
     <>
@@ -302,7 +326,7 @@ function App() {
             <div className='bg-black'></div>
           </div>
           <div id="Valutazione-Media-Per-Anno" className="w-1/3 h-[500px]">
-            <MyResponsiveLine data={tempChartDate} />
+            <MyResponsiveLine data={datiGrafico2} />
           </div>
         </span>
         
