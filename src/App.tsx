@@ -6,7 +6,7 @@ import axios from "axios";
 import { ReactNode, useEffect, useState } from 'react';
 
 import { MyResponsiveLine } from './components/InteractiveLine';
-// import { MyResponsiveBar } from './components/ResponsiveBar';
+import { MyResponsiveBar } from './components/ResponsiveBar';
 
 import {
   Table,
@@ -17,122 +17,26 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+interface DataG1 {
+  anno: number;
+  film: number;
+}
+
+interface DataG2 {
+  id: string;
+  color: string;
+  data: object[];
+}
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 let allDataForDatiGRafico2: { x: number, y: number }[] = [];
-// const tempChar1Date = [
-//   {
-//     "country": "AD",
-//     "hot dog": 53,
-//     "hot dogColor": "hsl(10, 70%, 50%)",
-//     "burger": 142,
-//     "burgerColor": "hsl(2, 70%, 50%)",
-//     "sandwich": 130,
-//     "sandwichColor": "hsl(310, 70%, 50%)",
-//     "kebab": 145,
-//     "kebabColor": "hsl(267, 70%, 50%)",
-//     "fries": 154,
-//     "friesColor": "hsl(44, 70%, 50%)",
-//     "donut": 179,
-//     "donutColor": "hsl(351, 70%, 50%)"
-//   },
-//   {
-//     "country": "AE",
-//     "hot dog": 41,
-//     "hot dogColor": "hsl(311, 70%, 50%)",
-//     "burger": 166,
-//     "burgerColor": "hsl(243, 70%, 50%)",
-//     "sandwich": 198,
-//     "sandwichColor": "hsl(215, 70%, 50%)",
-//     "kebab": 74,
-//     "kebabColor": "hsl(155, 70%, 50%)",
-//     "fries": 51,
-//     "friesColor": "hsl(123, 70%, 50%)",
-//     "donut": 94,
-//     "donutColor": "hsl(100, 70%, 50%)"
-//   },
-//   {
-//     "country": "AF",
-//     "hot dog": 45,
-//     "hot dogColor": "hsl(226, 70%, 50%)",
-//     "burger": 37,
-//     "burgerColor": "hsl(329, 70%, 50%)",
-//     "sandwich": 3,
-//     "sandwichColor": "hsl(43, 70%, 50%)",
-//     "kebab": 46,
-//     "kebabColor": "hsl(166, 70%, 50%)",
-//     "fries": 99,
-//     "friesColor": "hsl(202, 70%, 50%)",
-//     "donut": 85,
-//     "donutColor": "hsl(209, 70%, 50%)"
-//   },
-//   {
-//     "country": "AG",
-//     "hot dog": 199,
-//     "hot dogColor": "hsl(60, 70%, 50%)",
-//     "burger": 159,
-//     "burgerColor": "hsl(118, 70%, 50%)",
-//     "sandwich": 74,
-//     "sandwichColor": "hsl(341, 70%, 50%)",
-//     "kebab": 177,
-//     "kebabColor": "hsl(49, 70%, 50%)",
-//     "fries": 181,
-//     "friesColor": "hsl(257, 70%, 50%)",
-//     "donut": 92,
-//     "donutColor": "hsl(188, 70%, 50%)"
-//   },
-//   {
-//     "country": "AI",
-//     "hot dog": 15,
-//     "hot dogColor": "hsl(35, 70%, 50%)",
-//     "burger": 173,
-//     "burgerColor": "hsl(248, 70%, 50%)",
-//     "sandwich": 81,
-//     "sandwichColor": "hsl(224, 70%, 50%)",
-//     "kebab": 106,
-//     "kebabColor": "hsl(239, 70%, 50%)",
-//     "fries": 64,
-//     "friesColor": "hsl(36, 70%, 50%)",
-//     "donut": 199,
-//     "donutColor": "hsl(175, 70%, 50%)"
-//   },
-//   {
-//     "country": "AL",
-//     "hot dog": 100,
-//     "hot dogColor": "hsl(56, 70%, 50%)",
-//     "burger": 152,
-//     "burgerColor": "hsl(294, 70%, 50%)",
-//     "sandwich": 10,
-//     "sandwichColor": "hsl(72, 70%, 50%)",
-//     "kebab": 198,
-//     "kebabColor": "hsl(93, 70%, 50%)",
-//     "fries": 18,
-//     "friesColor": "hsl(246, 70%, 50%)",
-//     "donut": 151,
-//     "donutColor": "hsl(176, 70%, 50%)"
-//   },
-//   {
-//     "country": "AM",
-//     "hot dog": 117,
-//     "hot dogColor": "hsl(298, 70%, 50%)",
-//     "burger": 40,
-//     "burgerColor": "hsl(91, 70%, 50%)",
-//     "sandwich": 112,
-//     "sandwichColor": "hsl(287, 70%, 50%)",
-//     "kebab": 115,
-//     "kebabColor": "hsl(286, 70%, 50%)",
-//     "fries": 185,
-//     "friesColor": "hsl(134, 70%, 50%)",
-//     "donut": 159,
-//     "donutColor": "hsl(255, 70%, 50%)"
-//   }
-// ]
-
+let allDataForDatiGRafico1: { anno: number, film: number }[] = [];
+let datiGrafico1:DataG1[] = []
 let datiGrafico2:DataG2[] = [
   {
     "id": "Media Voto",
-    "color": "hsl(27, 70%, 50%)",
+    "color": "hsl(210, 100%, 50%)",
     "data": []
   }
 ]
@@ -154,12 +58,6 @@ const fetchFromApi = async (url: string) => {
     return [];
   }
 };
-
-interface DataG2 {
-  id: string;
-  color: string;
-  data: object[];
-}
 
 interface Movie {
   original_language: string;
@@ -184,8 +82,25 @@ function App() {
   }, []);
 
   // costruzione dati per grafico
-  
   useEffect(() => {
+    // grafico 1
+    let numFilmPerYear: number[] = [];
+    movies.forEach((movie) => {
+      if (movie.release_date) {
+        numFilmPerYear[parseInt(movie.release_date.toString().slice(0, 4))] = (numFilmPerYear[parseInt(movie.release_date.toString().slice(0, 4))] || 0) + 1;
+      }
+    })
+    for (let i = 1900; i < numFilmPerYear.length; i++) {
+      if(numFilmPerYear[i]>0){
+        allDataForDatiGRafico1.push({
+          anno: i,
+          film: numFilmPerYear[i]
+        })
+      }
+    }
+
+
+    // grafico 2
     let objarray: any[] = [];
     movies.forEach((movie) => {
       let obj: { y: number, v:number }={
@@ -221,6 +136,7 @@ function App() {
   },[movies]);
 
   useEffect(() => {
+    datiGrafico1 = allDataForDatiGRafico1.filter((obj: { anno: number, film: number }) => years.includes(obj.anno));
     datiGrafico2[0].data = allDataForDatiGRafico2.filter((obj: { x: number, y: number }) => years.includes(obj.x));
   }
   ,[years]);
@@ -283,7 +199,7 @@ function App() {
       </div>
 
       {/* terza parte grafici */}
-      <div id='Interactive-Chart' className='bg-white mb-[50px]'>
+      <div id='Interactive-Chart' className='bg-white mb-[50px] pb-10 pt-3'>
         <h1 className="relative top-2 left-0 m-4 text-black">Grafico interattivo</h1>
         <span className="flex justify-between space-x-4">
           <div id="Selezione-Anno" className="w-1/3">
@@ -319,8 +235,8 @@ function App() {
            
 
           </div>
-          <div id="Film-Per-Anno" className="w-1/3 h-[500px] bg-amber-400">
-            {/* <MyResponsiveBar data={tempChar1Date} /> */}
+          <div id="Film-Per-Anno" className="w-1/3 h-[500px]">
+            <MyResponsiveBar data={datiGrafico1} />
             {/* al momento non funziona */}
             <div className='bg-black'></div>
           </div>

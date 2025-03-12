@@ -11,51 +11,52 @@ import { LineSvgProps } from '@nivo/line';
 
 interface MyResponsiveLineProps extends LineSvgProps {}
 
-export const MyResponsiveLine = ({ data }: MyResponsiveLineProps) => (
-    <ResponsiveLine
-        data={data}
-        margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-        xScale={{ type: 'point' }}
-        yScale={{
-            type: 'linear',
-            min: 'auto',
-            max: 'auto',
-            stacked: true,
-            reverse: false
-        }}
-        yFormat=" >-.2f"
-        axisTop={null}
-        axisRight={null}
-        axisBottom={{
-            tickSize: 3,
-            tickPadding: 2,
-            tickRotation: 0,
-            legend: 'anno',
-            legendOffset: 31,
-            legendPosition: 'middle',
-            truncateTickAt: 0
-        }}
-        axisLeft={{
-            tickSize: 4,
-            tickPadding: 5,
-            tickRotation: 0,
-            legend: 'voto',
-            legendOffset: -40,
-            legendPosition: 'middle',
-            truncateTickAt: 0
-        }}
-        enableGridX={false}
-        colors={{ scheme: 'category10' }}
-        lineWidth={6}
-        pointSize={8}
-        pointColor="#ffffff"
-        pointBorderWidth={3}
-        pointBorderColor={{ from: 'serieColor', modifiers: [] }}
-        pointLabel="data.yFormatted"
-        pointLabelYOffset={-12}
-        areaOpacity={0.25}
-        enableTouchCrosshair={true}
-        useMesh={true}
-        
-    />
-)
+export const MyResponsiveLine = ({ data }: MyResponsiveLineProps) => {
+    // Se data è vuoto o non contiene il campo 'data' nel primo elemento, usa un fallback.
+    const safeData = data && data.length && data[0].data ? data : [{ id: "No Data", data: [] }];
+    return (
+        <div style={{ height: '500px' }}>
+            <ResponsiveLine
+                data={safeData}
+                margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+                xScale={{ type: 'point' }}
+                yScale={{
+                    type: 'linear',
+                    min: 'auto',
+                    max: 'auto',
+                    stacked: true,
+                    reverse: false
+                }}
+                yFormat=" >-.2f"
+                axisTop={null}
+                axisRight={null}
+                axisBottom={{
+                    tickSize: 5,
+                    tickPadding: 5,
+                    tickRotation: 0,
+                    legend: 'Anno',
+                    legendOffset: 36,
+                    legendPosition: 'middle',
+                    truncateTickAt: 0
+                }}
+                axisLeft={{
+                    tickSize: 5,
+                    tickPadding: 5,
+                    tickRotation: 0,
+                    legend: 'Media Voto',
+                    legendOffset: -40,
+                    legendPosition: 'middle',
+                    truncateTickAt: 0
+                }}
+                pointSize={10}
+                pointColor={{ theme: 'background' }}
+                pointBorderWidth={2}
+                pointBorderColor={{ from: 'serieColor' }}
+                pointLabel="data.yFormatted"
+                pointLabelYOffset={-12}
+                // enableTouchCrosshair={true}
+                // useMesh={true}
+            />
+        </div>
+    );
+};
