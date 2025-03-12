@@ -32,14 +32,6 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 let allDataForDatiGRafico2: { x: number, y: number }[] = [];
 let allDataForDatiGRafico1: { anno: number, film: number }[] = [];
-let datiGrafico1:DataG1[] = []
-let datiGrafico2:DataG2[] = [
-  {
-    "id": "Media Voto",
-    "color": "hsl(210, 100%, 50%)",
-    "data": []
-  }
-]
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -71,15 +63,34 @@ function App() {
 
   const [movies, setMovies] = useState<Movie[]>([]);
   const [years, setYears] = useState<Number[]>([]);
+  const [datiGrafico1, setDatiGrafico1] = useState<DataG1[]>([]);
+  const [datiGrafico2, setDatiGrafico2] = useState<DataG2[]>([]);
 
-
+  // presa dati da api
   useEffect(() => {
     const getMovies = async () => {
-      const data = await fetchFromApi("/trending/movie/week");
-      setMovies(data);
+      let allMovies:any = [];
+      for (let i = 0; i < 5; i++) {
+        const data = await fetchFromApi("/movie/top_rated?page=" + i);
+        allMovies = [...allMovies, ...data];
+      }
+      setMovies(allMovies);
     };
     getMovies();
   }, []);
+
+  // inizializzazione dati grafico 2
+  useEffect(() => {
+    setDatiGrafico2(
+      [
+        {
+          "id": "Media Voto",
+          "color": "hsl(210, 100%, 50%)",
+          "data": []
+        }
+      ]
+    )
+  },[]);
 
   // costruzione dati per grafico
   useEffect(() => {
@@ -136,8 +147,14 @@ function App() {
   },[movies]);
 
   useEffect(() => {
-    datiGrafico1 = allDataForDatiGRafico1.filter((obj: { anno: number, film: number }) => years.includes(obj.anno));
-    datiGrafico2[0].data = allDataForDatiGRafico2.filter((obj: { x: number, y: number }) => years.includes(obj.x));
+    setDatiGrafico1(allDataForDatiGRafico1.filter((obj: { anno: number, film: number }) => years.includes(obj.anno)));
+    let tempdatiGrafico2:DataG2[]=JSON.parse(JSON.stringify(datiGrafico2));
+    if (tempdatiGrafico2[0] && tempdatiGrafico2[0].data) {
+      tempdatiGrafico2[0].data = allDataForDatiGRafico2.filter((obj: { x: number, y: number }) => years.includes(obj.x));
+      console.log(tempdatiGrafico2)
+      setDatiGrafico2(tempdatiGrafico2)
+    }
+    
   }
   ,[years]);
 
