@@ -70,7 +70,7 @@ function App() {
   useEffect(() => {
     const getMovies = async () => {
       let allMovies:any = [];
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 30; i++) {
         const data = await fetchFromApi("/movie/top_rated?page=" + i);
         allMovies = [...allMovies, ...data];
       }
@@ -244,7 +244,7 @@ function App() {
                   setYears(years.filter(y => y !== year));
                 }}
                 >
-                x
+                  x
                 </button>
                 </div>
               ))}
